@@ -173,16 +173,17 @@ st.markdown('<p class="subtitle">Transform handwritten characters into digital t
 
 # 1️⃣ Load Model with error handling
 @st.cache_resource
-def load_model():
-    try:
-        model_path = r"enter_your_file_path\best_model.keras"
-        model = tf.keras.models.load_model(model_path)
-        return model, None
-    except Exception as e:
-        return None, str(e)
+def load_character_model():
+    model_path = os.path.join(os.getcwd(), "best_model.keras")
 
-model, error = load_model()
+    if not os.path.exists(model_path):
+        st.error(f"❌ Model file not found: {model_path}")
+        st.info("Make sure best_model.keras is inside your GitHub/Streamlit project folder.")
+        st.stop()
 
+    return tf.keras.models.load_model(model_path)
+
+model = load_character_model()
 if error:
     st.error(f"❌ Model loading failed: {error}")
     st.info("Please check if the model file exists at the specified path.")
@@ -324,3 +325,4 @@ st.markdown("""
 </div>
 
 """, unsafe_allow_html=True)
+
